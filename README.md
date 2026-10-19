@@ -231,6 +231,23 @@ Every label has at least 8 in the test split, but `culture` is exactly at 8
 and `career` at 9, so one post moves either label's recall by 11–13 points.
 The run took about 2.5 minutes on `mps` (137 s training).
 
+### Stretch: second run with one hyperparameter changed
+
+**What I'm adding (written before the run):** a second training run with
+`EPOCHS` changed from **3 to 10**. Everything else stays the same: same
+`labels.csv`, seed 42 (so the same 165/36/36 split), lr 2e-5, batch 16,
+`MAX_LENGTH` 128, `mps`. **Why:** the default run predicted `technical` for
+all 36 test posts. With 165 training posts and batch size 16, 3 epochs is only
+about 33 weight updates, and training loss had only fallen to about 0.82. Ten
+epochs gives about 110 updates. The question is whether more training gets the
+model off the majority label, or whether something else (the labels, the
+data size) is the limit.
+
+The output goes to `results_stretch_epochs10.json`. `results.json` stays the
+default 3-epoch run, which is what the unit 6 baseline compares against.
+
+**What moved:** _(filled in after the run)_
+
 ---
 
 ## How I Used AI
