@@ -42,6 +42,11 @@
 <!-- Your community, and what your classifier sorts posts into. Three or four
      sentences. -->
 
+TakeMeter classifies text posts from **r/labrats**, a public subreddit for
+people who work in research labs: undergrads, techs, grad students, postdocs
+and PIs. It sorts each post into _(TODO: your labels and what separates them)_.
+The model is a fine-tuned DistilBERT trained on 200+ posts I labelled myself.
+
 
 
 ---
@@ -91,7 +96,17 @@
 <!-- Where you collected from, how you labelled, your counts, and three hard
      cases. -->
 
-**Where the posts came from:**
+**Where the posts came from:** r/labrats, through the subreddit's public
+"new" RSS feed, collected 2026-10-18. `labels.csv` holds every **text** post in
+that feed from 2026-10-06 to 2026-10-19 (240 posts), with the title on the first
+line and the whole body below it, untrimmed. Out of the 500 newest posts I
+excluded image and link posts (189: a text model can't see the picture or the
+article), posts with an image embedded in the text (5), non-English posts (2)
+and the monthly mod thread (1). No usernames are stored. Each row's link and
+date are in `notes/collection_sources.csv`. 63 older posts (Oct 1–6) from the
+same feed are held unlabelled in `notes/reserve_posts.csv` for topping up a
+thin label. Collection was scripted by Claude (see How I Used AI).
+_(TODO: if you delete rows during review, update the 240 and say why.)_
 
 **How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
 Say so plainly — the disclosure is required, not penalised. -->
@@ -137,11 +152,20 @@ Say so plainly — the disclosure is required, not penalised. -->
 
 <!-- Your starting model, your settings, and anything you changed and why. -->
 
-**Base model:**
+**Base model:** `distilbert-base-uncased`
 
 **Settings:** <!-- epochs, learning rate, batch size, seed -->
+3 epochs, learning rate 2e-5, batch size 16, `MAX_LENGTH` 128 tokens, seed 42.
 
-**Anything I changed from the defaults, and why:**
+**Device:** `mps` (Apple Silicon GPU), torch 2.14.1, transformers 4.57.6,
+Python 3.12.13. Different hardware does the arithmetic in a slightly different
+order, so the same data and seed can give slightly different numbers elsewhere.
+
+**Anything I changed from the defaults, and why:** Nothing. All defaults.
+_(TODO: update if you change anything.)_ Worth knowing about the defaults on
+this data: the model reads 128 tokens, about the first 96 words. The median
+post is 122 words, and only 40% of posts fit completely, so the model mostly
+sees the title and opening.
 
 **Split sizes:** <!-- train / val / test, and per-label counts in the test
 split. If a label had fewer than about 8 in test, say so — it explains a lot
