@@ -246,7 +246,43 @@ data size) is the limit.
 The output goes to `results_stretch_epochs10.json`. `results.json` stays the
 default 3-epoch run, which is what the unit 6 baseline compares against.
 
-**What moved:** _(filled in after the run)_
+**What moved:** _(numbers drafted by Claude from the two results files. Put
+the interpretation in your own words.)_
+
+Same 36 test posts in both runs (checked: identical `test_split.csv`).
+
+| Measure | 3 epochs (`results.json`) | 10 epochs (`results_stretch_epochs10.json`) |
+|---|---|---|
+| Overall accuracy | 0.528 | **0.806** |
+| Macro F1 | 0.230 | **0.743** |
+| F1: `career` (n=9) | 0.000 | 0.667 |
+| F1: `culture` (n=8) | 0.000 | 0.588 |
+| F1: `technical` (n=19) | 0.691 | 0.973 |
+| Accuracy, most-confident third (12 posts) | 1.000 | 1.000 |
+| Accuracy, least-confident third (12 posts) | 0.083 | 0.583 |
+
+10-epoch confusion matrix:
+
+| true \ predicted | career | culture | technical |
+|---|---|---|---|
+| **career** | 6 | 3 | 0 |
+| **culture** | 3 | 5 | 0 |
+| **technical** | 0 | 1 | 18 |
+
+- **The model got off the majority label.** At 3 epochs it called every post
+  `technical`. At 10 it uses all three labels.
+- **6 of the 7 remaining errors are `career` ↔ `culture`**, 3 in each
+  direction. That's the boundary my decision rule covers. `technical` is
+  nearly solved: 18 of 19 right, and nothing else gets called `technical`.
+- **Why more epochs helped this much:** the learning rate decays linearly to
+  zero over the whole run. The 3-epoch run spent its last epoch at a tiny
+  learning rate, after only ~22 updates at a useful one. In the 10-epoch run,
+  validation accuracy at epoch 3 was already 0.75 (vs. 0.53 in the default run)
+  and levelled off at 0.806 from epoch 8.
+- **Caveats:** one seed and 36 test posts, so one post is 2.8 points. I chose
+  10 epochs *after* seeing the default run's test result, which makes this
+  number a little optimistic. The three-seed runs next unit are the real test.
+  Training took 158 s on `mps`.
 
 ---
 
