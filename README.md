@@ -219,8 +219,17 @@ sees the title and opening.
 **Split sizes:** <!-- train / val / test, and per-label counts in the test
 split. If a label had fewer than about 8 in test, say so — it explains a lot
 of next unit's variance. -->
+237 rows → train 165 · val 36 · test 36 (stratified, seed 42).
 
+| Label | train | val | test |
+|---|---|---|---|
+| career | 39 | 9 | 9 |
+| culture | 38 | 8 | 8 |
+| technical | 88 | 19 | 19 |
 
+Every label has at least 8 in the test split, but `culture` is exactly at 8
+and `career` at 9, so one post moves either label's recall by 11–13 points.
+The run took about 2.5 minutes on `mps` (137 s training).
 
 ---
 
