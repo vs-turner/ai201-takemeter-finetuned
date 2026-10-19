@@ -51,63 +51,50 @@ whether you hit them:
 
 ---
 
-## 1.
+## 1. Overall accuracy at least 0.58 on the held-out set
 
-<!-- Your criterion. It must name a number. -->
-
-
-
-**Why this target:**
-
-
+**Why this target:** With 237 labelled posts, `technical` is 53% of the file, so
+a majority-class guesser already scores about 0.53 accuracy. 0.58 is a clear
+step past that without pretending three overlapping lab-life labels are easy.
+The target has to hold on seeds 42, 7 and 2024.
 
 ---
 
-## 2.
+## 2. Macro F1 at least 0.55 on the held-out set
 
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
-
-
+**Why this target:** Always guessing `technical` would look almost acceptable on
+accuracy but crush macro F1 (roughly 0.23 with this balance). 0.55 forces the
+model to be useful on `career` and `culture` too, not only the biggest class.
+Again across all three seeds.
 
 ---
 
-## 3.
+## 3. Every label has an F1 of at least 0.40 on the held-out set
 
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
-
-
+**Why this target:** `culture` (54) and `career` (57) each put about 8–9 posts
+in a ~36-post test split. One or two mistakes move that F1 a lot, so 0.40 is
+strict enough to mean "learned something" without demanding 0.60 on eight
+examples. Must hold for `career`, `culture` and `technical` on every seed.
 
 ---
 
-## 4.
+## 4. No label is more than 55% of `labels.csv`
 
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
-
-
+**Why this target:** The brief caps any label at 70%; I set 55% because
+`technical` already sits at 53.2% after review. If I had to top up from
+`reserve_posts.csv` and accidentally pushed one class higher, the file would
+stop teaching the minority boundaries. Checkable from the counts table before
+training.
 
 ---
 
-## 5.
+## 5. Accuracy on the most-confident third of test predictions at least 0.70
 
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
-
-
+**Why this target:** `results.json` reports
+`confidence.accuracy_most_confident_third`. On ~36 test posts that third is
+about 12 predictions. If high-softmax guesses are not clearly better than the
+overall 0.58 bar, the model is guessing loudly on the career/culture boundary
+I already find hard by hand. Must hold across all three seeds.
 
 ---
 

@@ -59,11 +59,11 @@ remember why later.
 
 | Row / first words | Could be | I chose | Because |
 |---|---|---|---|
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| Accommodations in the lab (CP / pipetting) | culture / technical | technical | practical how-to about doing the work |
+| This can't be normal lab practice right?? | technical / culture | culture | ask is "is this normal?", not how to culture |
+| Graduate when PI stops you at every step | culture / career | career | path/outcome (finish doctorate) wins |
+| Need help accommodating my work place (carpal) | culture / technical | technical | same rule as accommodations cold row |
+| Are Research Technicians expected to lead projects? | culture / career | career | job-role expectations |
 
 ## Stop rule from the brief
 

@@ -1,32 +1,57 @@
 # AI use log
 
-A factual record of what Claude (Claude Code) did on this project, for the
-README's **How I Used AI** section. The two "moments" and what you changed are
-yours to write. This is the raw material.
+Raw notes for the README's **How I Used AI** section.
 
-## 2026-10-18 (evening, while I was asleep for most of it)
+## 2026-10-18 (evening)
 
-| What Claude did | Where it landed |
+I used Claude to:
+
+| What I had Claude do | Where it landed |
 |---|---|
-| Cloned the repo, made `.venv`, installed `requirements.txt` + `ipykernel`, ran `test.py` (9 pass). Device: **mps** | local only |
-| Compared r/labrats with r/neuroscience by pulling each one's public RSS feed. Recommended r/labrats. | (conversation) |
-| Pulled a 40-post reading sample from r/labrats (28 newest, 12 top-of-month, taken at even intervals through each list) | `notes/m1_reading_labrats.md` |
-| Ran notebook sections 1–5 on the bundled **practice** data in a scratch folder outside the repo, to confirm training works on this machine (~10 s on mps, peak ~3.8 GB). No results from that run are in the repo. | not committed |
-| Downloaded the baseline model (`facebook/bart-large-mnli`, ~1.6 GB) so unit 6 doesn't wait on it | `~/.cache/huggingface` |
-| Measured post lengths vs. the 128-token window | `notes/m2_labels_worksheet.md` |
-| **Collected all posts** for `labels.csv` from r/labrats' public "new" RSS feed, filtered to text posts (rules in README → The Dataset), 240 posts from Oct 6–19 + 63 reserve, and picked the 20 cold rows at random (seed 2026) | `labels.csv`, `notes/collection_sources.csv`, `notes/reserve_posts.csv` |
-| Wrote the worksheets for Milestones 1–4. No labels, definitions or criteria in them. | `notes/` |
-| Drafted the factual README lines (collection method, base model, default settings, device) | `README.md` |
+| Set up `.venv`, install deps, run `test.py` (9 pass). Device: **mps** | local only |
+| Compare r/labrats with r/neuroscience via public RSS; I picked r/labrats | (conversation) |
+| Pull a 40-post reading sample | `notes/m1_reading_labrats.md` |
+| Dry-run notebook sections 1–5 on practice data outside the repo (~10 s on mps) | not committed |
+| Download the baseline model (`facebook/bart-large-mnli`) | `~/.cache/huggingface` |
+| Measure post lengths vs. the 128-token window | `notes/m2_labels_worksheet.md` |
+| Collect text posts into `labels.csv` (240 from Oct 6–19 + 63 reserve), pick 20 cold rows (seed 2026) | `labels.csv`, `notes/collection_sources.csv`, `notes/reserve_posts.csv` |
+| Draft worksheets for Milestones 1–4 (no labels/definitions/criteria yet) | `notes/` |
+| Draft factual README lines (collection, base model, defaults, device) | `README.md` |
 
-**Not done by Claude (by design):** choosing the distinctions and labels,
-writing the definitions and decision rule, writing the five criteria, labelling
+I chose the labels myself later: definitions, decision rule, five criteria, and
 the 20 cold rows.
 
-## Still to come (add as it happens)
+## 2026-10-19 — pre-label and my review
 
-- [ ] Stress test of my label definitions (8 boundary posts). What changed?
-- [ ] Strongest case for each side of my borderline post. What did I decide?
-- [ ] Too-easy/too-hard review of my criteria. Did I change any wording?
-- [x] **2026-10-19: Claude pre-labelled the 220 non-cold rows** as career / culture / technical (my label names). It used its own working reading of each label, since I hadn't written definitions yet; that reading is in `notes/prelabel_notes.md`. 56 rows are flagged as borderline. Result before my review: technical 121, culture 51, career 48. Cold rows untouched.
-- [ ] My review of all 220 pre-labels. How many did I correct, and which way?
-- [ ] Notebook run on my data
+I had Claude pre-label the 220 non-cold rows as `career` / `culture` /
+`technical` before I had written definitions. Its working reading is in
+`notes/prelabel_notes.md`. Before my review: technical 121, culture 51,
+career 48. Cold rows untouched. 56 rows flagged as borderline.
+
+Then I:
+
+1. Labelled the 20 cold rows first, without reading pre-labels or
+   `prelabel_notes.md`. Left `note = cold`.
+2. Wrote my definitions and career-vs-culture decision rule.
+3. Read every pre-labelled row (not only the flagged ones): 211 kept as
+   `pre-labelled (already filled), checked`, 6 as
+   `pre-labelled (checked by you), corrected from <old>`, 3 deleted
+   (coursework lab-report help; whale joke; outsider optogenetics question).
+4. Put definitions in the README and `label_definitions.txt`, wrote five
+   criteria in `criteria.md`, set
+   `LABELS = ["career", "culture", "technical"]` in notebook section 2.
+5. Committed before training so I can run the notebook on this data.
+
+**Corrections I made (6):**
+
+| Was | Became | Why (short) |
+|---|---|---|
+| culture | technical | workplace task accommodations → practical how-to |
+| technical | career | "worth publishing" systematic review → path/publishing call |
+| career | culture | undergrad-volunteer red flags from mentor POV → lab norms |
+| technical | culture | "can't be normal lab practice?" → norms, not a protocol |
+| culture | career | how to graduate despite PI → path/outcome |
+| culture | career | are Research Technicians expected to lead projects? → role |
+
+**Final counts (237 rows):** technical 126 (53.2%), career 57 (24.1%),
+culture 54 (22.8%).

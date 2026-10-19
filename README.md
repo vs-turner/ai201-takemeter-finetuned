@@ -44,8 +44,10 @@
 
 TakeMeter classifies text posts from **r/labrats**, a public subreddit for
 people who work in research labs: undergrads, techs, grad students, postdocs
-and PIs. It sorts each post into _(TODO: your labels and what separates them)_.
-The model is a fine-tuned DistilBERT trained on 200+ posts I labelled myself.
+and PIs. It sorts each post into one of three labels — `career`, `culture`, or
+`technical` — by what the writer is mainly asking about: their professional
+path, people and life in the lab, or how to do the work itself. The model is a
+fine-tuned DistilBERT trained on 200+ posts labelled for this project.
 
 
 
@@ -59,33 +61,63 @@ The model is a fine-tuned DistilBERT trained on 200+ posts I labelled myself.
      The decision rule is worth a point on its own and it's the thing most
      people leave out. Every taxonomy has a hardest boundary. Name yours. -->
 
-### `label_one`
+### `career`
 
-**Definition:**
-
-**Example 1:**
->
-
-**Example 2:**
->
-
-### `label_two`
-
-**Definition:**
+**Definition:** The post's main ask is the writer's professional path — jobs,
+applications, interviews, finding a lab or PI, leaving or finishing a program,
+role expectations, or publishing as a career milestone.
 
 **Example 1:**
->
+> "Potential PI ghosted me twice" — postdoc interview no-shows; asking what to
+> do next with the application.
 
 **Example 2:**
->
+> "Struggling to find an entry level lab assistant job *rant*" — job search and
+> what employers actually want.
+
+### `culture`
+
+**Definition:** The post's main ask is people and life in the lab —
+interpersonal dynamics, mentoring, workplace norms, emotions and venting,
+humour, or field norms, without a path decision.
+
+**Example 1:**
+> "Handling lab conflicts" — toxic mentorship from the PI's spouse; asking how
+> to raise it.
+
+**Example 2:**
+> "AI images/summaries in so many conference talks/posters" — field norms about
+> AI-generated slides, not a methods question.
+
+### `technical`
+
+**Definition:** The post's main ask is how to do the work — methods, protocols,
+reagents, equipment, troubleshooting experiments, sourcing supplies or services,
+or safety and PPE for doing the work.
+
+**Example 1:**
+> "BMDM differentiation" — optimizing a macrophage culture protocol and whether
+> late-adhering cells are usable.
+
+**Example 2:**
+> "Protein migration mystery" — HA-tagged protein running high on a Western;
+> asking what went wrong.
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `career` vs `culture`
 
 **The decision rule I used every time:**
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
+If the writer is asking what to do about their next job, degree, program, or
+role step (leave, apply, switch, quit, master out, finish the doctorate, what
+this job title is supposed to do), it is `career`, even when a bad PI or messy
+lab is the reason. If they are asking how people behave, what is normal, or how
+to handle a person — without that path decision — it is `culture`.
+
+Secondary rule for `culture` vs `technical`: if the post asks a practical
+how-to about the work (including physical task accommodations and lab
+safety/PPE), it is `technical`, even when emotional. If it is mainly venting or
+gauging whether a practice is "normal," it is `culture`.
 
 
 
@@ -97,54 +129,71 @@ The model is a fine-tuned DistilBERT trained on 200+ posts I labelled myself.
      cases. -->
 
 **Where the posts came from:** r/labrats, through the subreddit's public
-"new" RSS feed, collected 2026-10-18. `labels.csv` holds every **text** post in
-that feed from 2026-10-06 to 2026-10-19 (240 posts), with the title on the first
-line and the whole body below it, untrimmed. Out of the 500 newest posts I
-excluded image and link posts (189: a text model can't see the picture or the
-article), posts with an image embedded in the text (5), non-English posts (2)
-and the monthly mod thread (1). No usernames are stored. Each row's link and
-date are in `notes/collection_sources.csv`. 63 older posts (Oct 1–6) from the
-same feed are held unlabelled in `notes/reserve_posts.csv` for topping up a
-thin label. Collection was scripted by Claude (see How I Used AI).
-_(TODO: if you delete rows during review, update the 240 and say why.)_
+"new" RSS feed, collected 2026-10-18. `labels.csv` started as every **text**
+post in that feed from 2026-10-06 to 2026-10-19 (240 posts), with the title on
+the first line and the whole body below it, untrimmed. Out of the 500 newest
+posts the collection excluded image and link posts (189: a text model can't see
+the picture or the article), posts with an image embedded in the text (5),
+non-English posts (2) and the monthly mod thread (1). No usernames are stored.
+Each row's link and date are in `notes/collection_sources.csv`. 63 older posts
+(Oct 1–6) from the same feed are held unlabelled in `notes/reserve_posts.csv`
+for topping up a thin label. Collection was scripted by Claude (see How I Used
+AI). During review I deleted 3 rows that did not belong (coursework lab-report
+help, an off-topic whale joke, and an outsider optogenetics "mind control"
+question), leaving **237** labelled posts.
 
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+**How I labelled them:** I labelled the first 20 rows cold (`note = cold`)
+from the definitions above, before reading any other labels or
+`notes/prelabel_notes.md`. I had Claude pre-label the other 220 as
+`career` / `culture` / `technical`, then I read every pre-labelled row (not
+only the flagged ones): 211 kept as
+`pre-labelled (already filled), checked`, 6 changed to
+`pre-labelled (checked by you), corrected from <old>`, and 3 deleted. Details
+in `notes/ai_use_log.md`.
 
 **Counts per label:**
 
 | Label | Count | Share |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| technical | 126 | 53.2% |
+| career | 57 | 24.1% |
+| culture | 54 | 22.8% |
+| **Total** | 237 | 100% |
 
 **Three hard cases**
 
-<!-- Any post that made you pause: what it was, which two labels it could have
-     been, and what you chose. These are worth more than the easy 190. -->
-
 **1.**
-> *The post:*
+> *The post:* "Accommodations in the lab" — student with cerebral palsy asking
+> for pipetting / plate-streaking adaptations (dycem, etc.).
 >
-> *Could have been:*
+> *Could have been:* `culture` (disability and belonging) or `technical` (how
+> to perform the techniques).
 >
-> *I chose, because:*
+> *I chose, because:* `technical` — the decision rule treats a practical how-to
+> about doing the work as technical even when the reason is accessibility. Same
+> call on the carpal/cubital-tunnel workplace-accommodation pre-label I
+> corrected from culture.
 
 **2.**
-> *The post:*
+> *The post:* "This can't be normal lab practice right??" — lists glove-less
+> cell culture, shared incubators with yeast contamination, etc.
 >
-> *Could have been:*
+> *Could have been:* `technical` (aseptic technique) or `culture` (is this
+> normal / am I overreacting).
 >
-> *I chose, because:*
+> *I chose, because:* `culture` — the ask is whether the lab's behaviour is
+> normal and acceptable, not how to run sterile culture. Corrected from the
+> pre-label `technical`.
 
 **3.**
-> *The post:*
+> *The post:* "How to make sure you graduate with a doctorate when your PI is
+> stopping you at every step."
 >
-> *Could have been:*
+> *Could have been:* `culture` (toxic PI) or `career` (finish the degree).
 >
-> *I chose, because:*
+> *I chose, because:* `career` — the decision rule: path/outcome question
+> (graduate with the doctorate) wins even when the reason is interpersonal.
+> Corrected from the pre-label `culture`.
 
 ---
 
@@ -186,17 +235,30 @@ of next unit's variance. -->
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* Collect every text post from r/labrats' public "new" RSS
+  feed into `labels.csv`, filter non-text/non-English junk, reserve older posts,
+  and pick 20 cold rows at random.
+- *What came back:* 240 posts (Oct 6–19), 63 reserve posts, cold rows with
+  `note = cold`, plus worksheets and draft README facts — no labels or
+  definitions yet.
+- *What I changed:* Kept the collection. I wrote the taxonomy, criteria and
+  labels myself afterward.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* Pre-label the 220 non-cold rows as `career` / `culture` /
+  `technical`.
+- *What came back:* 220 pre-labels (technical-heavy, 56 flagged), plus a working
+  reading of the three names in `notes/prelabel_notes.md`.
+- *What I changed:* I labelled the cold 20 first, then checked all 220
+  pre-labels against my definitions — kept 211, corrected 6, deleted 3 — and
+  wrote the README taxonomy, `label_definitions.txt`, `criteria.md`, and
+  notebook `LABELS`.
 
-**Pre-labelling disclosure:**
+**Pre-labelling disclosure:** I had Claude pre-label 220 non-cold rows before
+my definitions existed. I read every one against the final taxonomy; I labelled
+the cold rows first with no look at those pre-labels. See
+`notes/ai_use_log.md`.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
