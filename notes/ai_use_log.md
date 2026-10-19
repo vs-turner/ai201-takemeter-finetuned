@@ -27,5 +27,6 @@ the 20 cold rows.
 - [ ] Stress test of my label definitions (8 boundary posts). What changed?
 - [ ] Strongest case for each side of my borderline post. What did I decide?
 - [ ] Too-easy/too-hard review of my criteria. Did I change any wording?
-- [ ] Pre-labelling of the non-cold rows. How many did I correct?
+- [x] **2026-10-19: Claude pre-labelled the 220 non-cold rows** as career / culture / technical (my label names). It used its own working reading of each label, since I hadn't written definitions yet; that reading is in `notes/prelabel_notes.md`. 56 rows are flagged as borderline. Result before my review: technical 121, culture 51, career 48. Cold rows untouched.
+- [ ] My review of all 220 pre-labels. How many did I correct, and which way?
 - [ ] Notebook run on my data
