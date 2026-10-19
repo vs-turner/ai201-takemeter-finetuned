@@ -15,11 +15,9 @@ I used Claude to:
 | Download the baseline model (`facebook/bart-large-mnli`) | `~/.cache/huggingface` |
 | Measure post lengths vs. the 128-token window | `notes/m2_labels_worksheet.md` |
 | Collect text posts into `labels.csv` (240 from Oct 6–19 + 63 reserve), pick 20 cold rows (seed 2026) | `labels.csv`, `notes/collection_sources.csv`, `notes/reserve_posts.csv` |
-| Draft worksheets for Milestones 1–4 (no labels/definitions/criteria yet) | `notes/` |
-| Draft factual README lines (collection, base model, defaults, device) | `README.md` |
 
-I chose the labels myself later: definitions, decision rule, five criteria, and
-the 20 cold rows.
+
+I chose the labels myself later: definitions, decision rule, five criteria, and the 20 cold rows.
 
 ## 2026-10-19 — pre-label and my review
 
