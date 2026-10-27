@@ -317,6 +317,12 @@ Same 36 test posts in both runs (checked: identical `test_split.csv`).
   wrote the README taxonomy, `label_definitions.txt`, `criteria.md`, and
   notebook `LABELS`.
 
+**Moment 3**
+
+- *What I asked for:* Read the confusion matrices and say where the errors sat, before choosing the one training change.
+- *What came back:* At 3 epochs every test post was called `technical`. At 10 epochs the leftover errors were `career` and `culture` swapped in both directions.
+- *What I changed:* I raised epochs from 3 to 10 and did not relabel. I did not treat that reading as an agreement score.
+
 **Pre-labelling disclosure:** I had Claude pre-label 220 non-cold rows before
 my definitions existed. I read every one against the final taxonomy; I labelled
 the cold rows first with no look at those pre-labels. See
@@ -435,7 +441,7 @@ Criterion 5 is MET as written. The confident third is right because those guesse
      data/staff_taxonomy.md, not your own — so every argument below is made
      from those definitions and those decision rules. -->
 
-**Agreement rate:** ___ / 30 = ___%
+**Agreement rate:** not computed. My 30 labels are in `my_staff_labels.csv`. `data/staff_labels.csv` was never in the repo, so `agreement.py` cannot list disagreements and I will not invent them.
 
 <!-- Nobody grades this number. A 60% who argues every disagreement from the
      stated rules beats a 95% who wrote "staff was right" nine times. Several
@@ -483,38 +489,36 @@ Criterion 5 is MET as written. The confident third is right because those guesse
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** `EPOCHS` from 3 to 10. Same labels, same learning rate (2e-5), same batch size (16), same three seeds. `RUN_LABEL` is `"after"`.
 
-**Which diagnosis pointed at it:**
+**Which diagnosis pointed at it:** The 3-epoch model predicted `technical` for every test post, so accuracy stayed at the majority-class share. That is a training collapse, not a relabel.
 
 ### Run Log — After
 
+Device: `mps`, torch 2.14.1. Accuracy spread is 0.083.
+
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.58 | 0.806 | 0.806 | 0.722 | MET |
+| 2. Macro F1 | ≥ 0.55 | 0.743 | 0.762 | 0.637 | MET |
+| 3. Every label's F1 | ≥ 0.40 | 0.67 / 0.59 / 0.97 | 0.78 / 0.59 / 0.92 | 0.74 / 0.36 / 0.81 | MISSED |
+| 4. No label over 55% of the file | ≤ 55% | 53.2% technical | same file | same file | MET |
+| 5. Most-confident third accuracy | ≥ 0.70 | 1.000 | 1.000 | 0.917 | MET |
 
-**Did it help, and how do I know:**
+Criterion 3 is `career` / `culture` / `technical`. It misses because `culture` F1 on seed 2024 is 0.364. The other four targets hold on every seed.
 
-<!-- If it didn't, say so. Relabelling that didn't help is a genuinely
-     interesting result and earns full credit. -->
-
-
+**Did it help, and how do I know:** Yes. Accuracy went from 0.528 on every seed to 0.806, 0.806, and 0.722, and macro F1 went from about 0.23 to 0.743, 0.762, and 0.637. The model now uses all three labels. `culture` is the one target that still fails on one seed.
 
 ---
 
 ## What's Still Broken
 
-<!-- For each criterion still missed: what you'd do, and why you stopped. -->
+**3. Every label's F1 ≥ 0.40.** Still missed. On seed 2024, `culture` recall is 2/8 (F1 0.364): 2 called `career`, 4 called `technical`. I would add `culture` posts from `notes/reserve_posts.csv`, labelled with the same path-versus-people rule, because eight test posts make one seed enough to miss 0.40. I stopped because this unit allowed one change, and that change was epochs. I also still do not have `data/staff_labels.csv`, so I will not relabel the `career`/`culture` boundary without the agreement list.
 
+Criteria 1, 2, 4, and 5 are met after the change. I am not lowering criterion 3.
 
-
-**The gap between what I meant my labels to capture and what the model
-learned:**
-<!-- Two sentences. Your confusion matrix is the evidence. -->
+**The gap between what I meant my labels to capture and what the model learned:**
+I meant `technical` to be a practical how-to, and `career` versus `culture` to turn on whether the writer is deciding their path. The 10-epoch seed-42 matrix shows the model learned the first split — 18 of 19 `technical` posts are right, and the other two labels are almost never called `technical` — and missed the second: 3 real `career` posts called `culture` and 3 the other way.
 
 
 
