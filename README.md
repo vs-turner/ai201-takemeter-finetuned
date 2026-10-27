@@ -405,22 +405,23 @@ Seed 42, the first of the three (section 7). Rows are true labels.
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Overall accuracy | ≥ 0.58 on every seed | MISSED | 0.528, 0.528, 0.528. One seed under the line fails the criterion. |
+| 2 | Macro F1 | ≥ 0.55 on every seed | MISSED | 0.230, 0.230, 0.235. All three are under. |
+| 3 | Every label's F1 | ≥ 0.40 on every seed | MISSED | `career` and `culture` are 0.000 on all three seeds. `technical` clears it (0.691, 0.691, 0.704). |
+| 4 | No label over 55% of `labels.csv` | ≤ 55% | MET | `technical` is 126/237 = 53.2%. The file does not change with the seed. |
+| 5 | Most-confident third accuracy | ≥ 0.70 on every seed | MET | 1.000 on seeds 42, 7, and 2024, so 0.70 holds on every seed. |
 
 **Diagnoses**
 
-<!-- For each miss: the cause, and how you know. The four common causes are:
-     too few examples for a label, a boundary you applied inconsistently, a
-     genuinely hard label pair, and a task the model can't reach from this
-     much data.
+All three misses are one failure. On seeds 42 and 7 the model calls every one of the 36 test posts `technical`. Seed 2024 sends one `culture` post to `career` and the other 35 to `technical`. Accuracy is 19/36 = 0.528, which is the test share of `technical`, on every seed. Macro F1 sits on the always-guess-`technical` score (~0.23) that criterion 2 was written to beat.
 
-     ⚠️ Use your agreement report as evidence. It is the only instrument you
-     have that can tell a LABELLING problem from a MODEL problem, and this
-     section is graded on whether you used it that way. -->
+This is a task the fine-tune did not reach from 237 examples in 3 epochs, not a hard `career`/`culture` pair. The matrix has almost no swaps between those two labels. Both minority classes are absorbed into `technical`, and nothing comes back the other way (9 real `career` posts called `technical`, 0 the other way, on seed 42). `career` (57) and `culture` (54) are thin, and each test split holds only 8 or 9 of them, but thinness alone does not explain a recall of zero that repeats on three seeds.
+
+The zero-shot baseline, scored on the same seed-42 posts, got `career` F1 0.452 and `culture` F1 0.333. Those posts are separable from the definitions. The trained model is worse on both, so the miss is the fine-tune collapsing to the majority class.
+
+I cannot use the agreement report to separate a labelling problem from a model problem. `data/staff_labels.csv` is not in the repo, so `agreement.py` has not run and there is no disagreement list. I am not claiming my own `career`/`culture` boundary was applied inconsistently. That check is still open.
+
+Criterion 5 is MET as written. The confident third is right because those guesses are the `technical` posts the model is sure about, which is the same collapse, not evidence it learned the other two labels. I am not lowering the target.
 
 
 
