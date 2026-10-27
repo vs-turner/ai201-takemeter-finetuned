@@ -336,18 +336,19 @@ the cold rows first with no look at those pre-labels. See
 
 | Measure | Baseline | Trained | Difference |
 |---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
+| Overall accuracy | 0.472 | 0.528 | +0.056 |
+| Macro F1 | 0.446 | 0.230 | -0.215 |
+| F1 — `career` | 0.452 | 0.000 | -0.452 |
+| F1 — `culture` | 0.333 | 0.000 | -0.333 |
+| F1 — `technical` | 0.552 | 0.691 | +0.139 |
+
+Both columns are the same 36 posts in `test_split.csv`. The baseline used the definitions in `label_definitions.txt`. A second run with bare label names only (not the baseline I am reporting) scored 0.556 accuracy and 0.531 macro F1, so the written definitions were worth about −0.08 accuracy on this zero-shot model.
 
 **What I predicted before I looked:**
-<!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
-     prediction made afterwards isn't one. -->
+The trained model will beat the baseline on `technical` and on overall accuracy, because that label is the largest and the most lexically distinct (protocols, reagents, equipment), while `career` vs `culture` is the boundary I already find hard by hand.
 
 **What the gap actually means:**
-<!-- If the baseline matched your trained model, your fine-tuning added
-     nothing — and that is a real finding, not a failure. Say it plainly. -->
+The prediction held for accuracy (+0.056) and for `technical` (+0.139 F1). It did not hold as a real gain: macro F1 fell by 0.215 because the trained model called every test post `technical`, so `career` and `culture` scored 0. Fine-tuning learned the majority class, not the taxonomy. The zero-shot baseline is the better model on the two smaller labels.
 
 
 
