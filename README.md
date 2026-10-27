@@ -359,29 +359,40 @@ The prediction held for accuracy (+0.056) and for `technical` (+0.139 F1). It di
 <!-- Five criteria across three seeds. The notebook's section 6 prints the
      spread table; the Target and Verdict columns are yours. -->
 
+Device: `mps` (Apple Silicon GPU), torch 2.14.1. `RUN_LABEL` stayed `"before"`.
+Accuracy spread across seeds is 0.000, under ten points, so this is not a
+friendly draw. It is the same result three times.
+
+| Measure | Seed 42 | Seed 7 | Seed 2024 | Spread |
+|---|---|---|---|---|
+| Overall accuracy | 0.528 | 0.528 | 0.528 | 0.000 |
+| Macro F1 | 0.230 | 0.230 | 0.235 | 0.004 |
+| F1 — `career` | 0.000 | 0.000 | 0.000 | 0.000 |
+| F1 — `culture` | 0.000 | 0.000 | 0.000 | 0.000 |
+| F1 — `technical` | 0.691 | 0.691 | 0.704 | 0.013 |
+
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.58 | 0.528 | 0.528 | 0.528 | MISSED |
+| 2. Macro F1 | ≥ 0.55 | 0.230 | 0.230 | 0.235 | MISSED |
+| 3. Every label's F1 | ≥ 0.40 | 0.00 / 0.00 / 0.69 | 0.00 / 0.00 / 0.69 | 0.00 / 0.00 / 0.70 | MISSED |
+| 4. No label over 55% of the file | ≤ 55% | 53.2% technical | same file | same file | MET |
+| 5. Most-confident third accuracy | ≥ 0.70 | 1.000 | 1.000 | 1.000 | MET |
+
+Criterion 3 is career / culture / technical. Criterion 4 is a property of `labels.csv`, not of the split.
 
 ### Confusion matrix
 
-<!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
-     An image of a matrix earns nothing. -->
+Seed 42, the first of the three (section 7). Rows are true labels.
 
-| true \ predicted |  |  |  |
+| true \ predicted | career | culture | technical |
 |---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
+| **career** | 0 | 0 | 9 |
+| **culture** | 0 | 0 | 8 |
+| **technical** | 0 | 0 | 19 |
 
 **My biggest off-diagonal number, and what it means:**
-<!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
-     direction. "7 real analysis posts were called hot_take and only 3 went the
-     other way" is a direction, not just an error rate. -->
+9 real `career` posts were called `technical`, and 0 real `technical` posts were called `career`. The model only emits `technical`. Seeds 7 and 2024 do the same (seed 2024 moves one `culture` post to `career` and still gets none of them right).
 
 
 
